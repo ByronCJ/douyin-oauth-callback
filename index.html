@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 视频创作助手 · 授权回调</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", sans-serif; background: #f6f7f9;
+         display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+  .card { background: #fff; border-radius: 16px; padding: 40px; max-width: 560px;
+          box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+  h1 { font-size: 20px; margin: 0 0 8px; }
+  .sub { color: #888; font-size: 14px; margin-bottom: 24px; }
+  .ok { color: #0a7; font-size: 15px; margin-bottom: 12px; }
+  .err { color: #e55; font-size: 15px; margin-bottom: 12px; }
+  code { display: block; background: #f0f1f3; padding: 14px; border-radius: 8px;
+         word-break: break-all; font-size: 14px; user-select: all; }
+  .hint { color: #666; font-size: 13px; margin-top: 16px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>AI 视频创作助手 · OAuth 授权回调</h1>
+  <p class="sub">此页面仅用于一次性接收抖音开放平台的授权码，之后即可忽略本页。</p>
+  <div id="status"></div>
+  <code id="code" style="display:none"></code>
+  <p class="hint">下一步：把上面方框中的授权码复制，回到会话中执行<br>
+  <code style="display:inline;user-select:text">python3 publish_douyin_api.py exchange-code &lt;授权码&gt; &lt;本页网址&gt;</code><br>
+  完成后本页面不会再有任何用途（token 本地保存，自动续期一年）。</p>
+</div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const s = document.getElementById('status'), c = document.getElementById('code');
+  const code = p.get('code'), err = p.get('error');
+  if (code) {
+    s.innerHTML = '<div class="ok">✅ 授权成功，你的授权码：</div>';
+    c.textContent = code; c.style.display = 'block';
+  } else if (err) {
+    s.innerHTML = '<div class="err">❌ 授权被拒绝或出错：' + err + '（请回会话重新生成授权链接）</div>';
+  } else {
+    s.innerHTML = '<div class="err">本页需要从抖音授权跳转访问（URL 带 ?code=xxx），直接打开无内容。</div>';
+  }
+</script>
+</body>
+</html>
